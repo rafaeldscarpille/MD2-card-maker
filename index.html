@@ -28,7 +28,14 @@ header{flex-shrink:0;background:#09091a;border-bottom:1px solid #b8860a;padding:
 .main{display:flex;flex:1;overflow:hidden;height:0}
 
 /* ── SIDEBAR ── */
-aside{width:300px;min-width:300px;flex-shrink:0;background:#0f0f20;border-right:1px solid #1e1e38;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column}
+aside{width:300px;min-width:300px;flex-shrink:0;background:#0f0f20;border-right:1px solid #1e1e38;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;position:relative;transition:width .2s ease}
+
+/* ── SIDEBAR COLLAPSE BUTTON ── */
+.aside-collapse-btn{position:sticky;top:6px;align-self:flex-end;flex-shrink:0;width:28px;height:28px;margin:6px 6px 0 0;background:#09091a;border:1px solid #c8960a;border-radius:6px;color:#c8960a;cursor:pointer;font-size:12px;line-height:1;display:flex;align-items:center;justify-content:center;z-index:15;transition:.15s}
+.aside-collapse-btn:hover{background:rgba(200,150,10,.15);transform:scale(1.05)}
+aside.collapsed{width:42px!important;min-width:42px!important;overflow:hidden}
+aside.collapsed>*:not(.aside-collapse-btn){display:none!important}
+aside.collapsed .aside-collapse-btn{align-self:center;margin:6px auto}
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#252540;border-radius:2px}::-webkit-scrollbar-thumb:hover{background:#c8960a}
 
 .sec{border-bottom:1px solid #1e1e38}
@@ -109,6 +116,8 @@ canvas#card.cg{cursor:grab}canvas#card.cd{cursor:grabbing}
   html,body{height:auto;min-height:100vh}
   .main{flex-direction:column;height:auto;overflow:visible}
   aside{width:100%;min-width:0;border-right:none;border-bottom:2px solid #c8960a;max-height:none;overflow:visible}
+  aside.collapsed{width:100%!important;min-width:0!important;height:42px!important;max-height:42px!important;overflow:hidden!important}
+  aside.collapsed .aside-collapse-btn{align-self:flex-end;margin:6px}
   .carea{
     width:100%;
     min-height:80vw;
@@ -155,6 +164,7 @@ canvas#card.cg{cursor:grab}canvas#card.cd{cursor:grabbing}
 </div>
 <div class="main">
 <div class="tab-pane active" id="pane-hero"><aside>
+<button type="button" class="aside-collapse-btn" onclick="toggleSidebar(this)" title="Recolher barra lateral">◀</button>
 
   <div class="sec">
     <div class="sh" onclick="tog(this)">Personagem & Imagem</div>
@@ -295,6 +305,7 @@ canvas#card.cg{cursor:grab}canvas#card.cd{cursor:grabbing}
 <!-- MOB PANE -->
 <div class="tab-pane" id="pane-mob" style="display:none!important">
   <aside id="aside-mob">
+  <button type="button" class="aside-collapse-btn" onclick="toggleSidebar(this)" title="Recolher barra lateral">◀</button>
 
   <div class="sec">
     <div class="sh closed" onclick="tog(this)">🖼 Imagem do Mob</div>
@@ -395,6 +406,7 @@ canvas#card.cg{cursor:grab}canvas#card.cd{cursor:grabbing}
 <!-- ROAMING PANE -->
 <div class="tab-pane" id="pane-roaming" style="display:none!important">
   <aside id="aside-roaming">
+  <button type="button" class="aside-collapse-btn" onclick="toggleSidebar(this)" title="Recolher barra lateral">◀</button>
 
   <div class="sec">
     <div class="sh closed" onclick="tog(this)">🖼 Imagem do Monstro</div>
@@ -576,6 +588,16 @@ function gset(id,v){document.getElementById(id).value=v}
 function sn(sid,nid){gset(nid,document.getElementById(sid).value)}
 function ns(nid,sid){gset(sid,document.getElementById(nid).value)}
 function tog(h){h.classList.toggle('closed');h.nextElementSibling.classList.toggle('closed')}
+
+// ── SIDEBAR COLLAPSE/EXPAND ──
+function toggleSidebar(btn){
+  const aside=btn.closest('aside');
+  if(!aside)return;
+  const collapsed=aside.classList.toggle('collapsed');
+  btn.textContent=collapsed?'▶':'◀';
+  btn.title=collapsed?'Expandir barra lateral':'Recolher barra lateral';
+  if(typeof fit==='function')setTimeout(fit,210);
+}
 
 // ── ABILITY ICON INSERTION ──
 let _activeHabField = null;
